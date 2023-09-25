@@ -8,9 +8,9 @@ const surveyTemplate = require('../services/emailTemplates/surveyTemplate');
 
 const Survey = mongoose.model('surveys');
 
-function isCommaSeparated(inputString) {
-  // Define a regular expression pattern to match a comma-separated string
-  const pattern = /^[^,]+(,[^,]+)*$/;
+function isEmail(inputString) {
+  // Define a regular expression pattern to match an email string
+  const pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   
   // Test if the input string matches the pattern
   return pattern.test(inputString);
@@ -36,9 +36,11 @@ module.exports = app => {
       });
     }
 
-    if (!isCommaSeparated(to)) {
+    const emails = to.split(',').map(email => ({ email: email.trim() }));
+
+    if (emails.some(email => !isEmail(email))) {
       return res.status(400).send({
-        error: '`to` must be a comma-separated string with emails.'
+        error: '`to` must only have emails.'
       });
     }
 
@@ -62,7 +64,7 @@ module.exports = app => {
     
     const survey = new Survey({
       title,
-      to: to.split(',').map(email => ({ email: email.trim() })),
+      to: emails,
       from,
       subject,
       body,
