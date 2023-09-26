@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const keys = require('../config/keys');
+
 const requireLogin = require('../middlewares/requireLogin');
 const requireCredits = require('../middlewares/requireCredits');
 
@@ -22,7 +24,7 @@ module.exports = app => {
   });
 
   app.post('/api/surveys', requireLogin, requireCredits, async (req, res) => {
-    const { title, to, from, subject, body } = req.body;
+    const { title, recipients, from = keys.mailerFrom, subject, body } = req.body;
 
     if (!title) {
       return res.status(400).send({
@@ -30,17 +32,17 @@ module.exports = app => {
       });
     }
 
-    if (!to) {
+    if (!recipients) {
       return res.status(400).send({
-        error: 'You must add a `to` to the Survey.'
+        error: 'You must add a `recipients` to the Survey.'
       });
     }
 
-    const recipients = to.split(',').map(email => ({ email: email.trim() }));
+    const recipientsArray = recipients.split(',').map(email => ({ email: email.trim() }));
 
-    if (recipients.some(email => !isEmail(email))) {
+    if (recipientsArray.some(({ email }) => !isEmail(email))) {
       return res.status(400).send({
-        error: '`to` must only have recipients.'
+        error: '`recipients` must only have recipients.'
       });
     }
 
@@ -64,7 +66,7 @@ module.exports = app => {
     
     const survey = new Survey({
       title,
-      to: recipients,
+      recipients: recipientsArray,
       from,
       subject,
       body,
@@ -73,7 +75,7 @@ module.exports = app => {
 
     req.user.credits -= 1;
     
-    const mailer = new Mailer(survey.to, survey.from, survey.subject, surveyTemplate(survey));
+    const mailer = new Mailer(survey.recipients, survey.from, survey.subject, surveyTemplate(survey));
 
     // // Start Transaction
     // async function performTransaction() {

@@ -7,4 +7,5 @@ module.exports = {
   stripeSecretKey: process.env.STRIPE_SECRET_KEY,
   sendGridApiKey: process.env.SEND_GRID_API_KEY,
   domain: process.env.DOMAIN,
+  mailerFrom: process.env.MAILER_FROM,
 }
