@@ -36,11 +36,11 @@ module.exports = app => {
       });
     }
 
-    const emails = to.split(',').map(email => ({ email: email.trim() }));
+    const recipients = to.split(',').map(email => ({ email: email.trim() }));
 
-    if (emails.some(email => !isEmail(email))) {
+    if (recipients.some(email => !isEmail(email))) {
       return res.status(400).send({
-        error: '`to` must only have emails.'
+        error: '`to` must only have recipients.'
       });
     }
 
@@ -64,7 +64,7 @@ module.exports = app => {
     
     const survey = new Survey({
       title,
-      to: emails,
+      to: recipients,
       from,
       subject,
       body,

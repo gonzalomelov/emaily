@@ -43,12 +43,12 @@ const validate = (values) => {
     }
   })
   
-  const { emails } = values; // title, subject, body, 
+  const { recipients } = values; // title, subject, body, 
 
-  if (emails) {
-    const validateEmailResponse = validateEmail(emails);
+  if (recipients) {
+    const validateEmailResponse = validateEmail(recipients);
     if (!validateEmailResponse.valid) {
-      errors.emails = validateEmailResponse.error;
+      errors.recipients = validateEmailResponse.error;
     }
   }
 
