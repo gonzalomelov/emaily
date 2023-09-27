@@ -6,8 +6,8 @@ module.exports = survey => `
   <p>${survey.body}</p>
   <p>Please click on the following links to provide your feedback:</p>
   <ul>
-    <li><a href="${keys.domain}/api/surveys/thanks">Yes</a></li>
-    <li><a href="${keys.domain}/api/surveys/thanks">No</a></li>
+    <li><a href="${keys.domain}/api/surveys/${survey.id}/yes">Yes</a></li>
+    <li><a href="${keys.domain}/api/surveys/${survey.id}/no">No</a></li>
   </ul>
   <p>Thank you for your valuable input.</p>
 `;

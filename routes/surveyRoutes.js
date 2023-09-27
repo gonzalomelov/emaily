@@ -23,6 +23,10 @@ module.exports = app => {
     res.send('Thanks!');
   });
 
+  app.get('/api/surveys/:_/:_(yes|no)', (req, res) => {
+    res.redirect('/api/surveys/thanks');
+  });
+
   app.post('/api/surveys', requireLogin, requireCredits, async (req, res) => {
     const { title, recipients, from = keys.mailerFrom, subject, body } = req.body;
 
