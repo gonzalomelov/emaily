@@ -41,12 +41,16 @@ module.exports = (app) => {
 
       await session.commitTransaction();
       session.endSession();
+      
       console.log('Bulk update completed.');
+
       return res.send({});
     } catch (error) {
       await session.abortTransaction();
       session.endSession();
+      
       console.error('Error during bulk update:', error);
+      
       return res.status(500).send('Internal Server Error: ' + error.message);
     }
   });
