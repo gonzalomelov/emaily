@@ -24,8 +24,21 @@ module.exports = (app) => {
     }, []);
 
     const bulkUpdateOperations = answers.map(({ email, surveyId, answer }) => ({
-      filter: { _id: surveyId, 'recipients.email': email, },
-      update: { $set: {'recipients.$.answer': answer === 'yes'}, },
+      filter: {
+        _id: surveyId,
+        recipients: {
+          $elemMatch: {
+            email: email,
+            answer: null
+          }
+        },
+      },
+      update: {
+          $set: {
+            'recipients.$.answer': answer === 'yes'
+          },
+          $inc: { [answer]: 1 }
+      },
     }));
 
     const session = await mongoose.startSession();

@@ -12,7 +12,15 @@ const surveySchema = new Schema({
   _user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
-  }
+  },
+  yes: {
+    type: Number,
+    default: 0
+  },
+  no: {
+    type: Number,
+    default: 0
+  },
 });
 
 mongoose.model('surveys', surveySchema);
