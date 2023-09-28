@@ -1,40 +1,37 @@
 const requireSendGrid = require('../middlewares/requireSendGrid');
 const mongoose = require('mongoose');
+const { Path } = require('path-parser');
+const { URL } = require('url');
 
 const Survey = mongoose.model('surveys');
 
 module.exports = (app) => {
   app.post('/api/mailer/webhooks', requireSendGrid, async (req, res) => {
-    console.log('Webhook executed', req.body);
-
-    const answers = [];
+    const pattern = new Path('/api/surveys/:surveyId/:answer');
     
-    req.body.forEach(({ event, email, url }) => {
-      switch (event) {
-        case 'click':
-          const regexPattern = /\/api\/surveys\/([^/]+)\/([^/]+)$/;
-          const match = url.match(regexPattern);
-          if (match) {
-            const surveyId = match[1];
-            const answer = match[2];
-            answers.push({ email, surveyId, answer });
-          } else {
-            console.log('URL does not match the expected pattern');
+    const answers = req.body.reduce((accumulator, { event, email, url }) => {
+      if (event === 'click') {
+        const match = pattern.test(new URL(url).pathname);
+        if (match) {
+          const { surveyId, answer } = match;
+          const newItem = { email, surveyId, answer };
+          if (!accumulator.some(item => item.email === newItem.email && item.surveyId === newItem.surveyId)) {
+            accumulator.push(newItem);
           }
-        default:
-          // Nothing
+        }
       }
-    });
+      return accumulator;
+    }, []);
+
+    const bulkUpdateOperations = answers.map(({ email, surveyId, answer }) => ({
+      filter: { _id: surveyId, 'recipients.email': email, },
+      update: { $set: {'recipients.$.answer': answer === 'yes'}, },
+    }));
 
     const session = await mongoose.startSession();
     session.startTransaction();
 
-    try {
-      const bulkUpdateOperations = answers.map(({ email, surveyId, answer }) => ({
-        filter: { _id: surveyId, 'recipients.email': email, },
-        update: { $set: {'recipients.$.answer': answer === 'yes'}, },
-      }));
-      
+    try {      
       for (const { filter, update } of bulkUpdateOperations) {
         await Survey.updateMany(filter, update, { session });
       }
@@ -42,14 +39,10 @@ module.exports = (app) => {
       await session.commitTransaction();
       session.endSession();
       
-      console.log('Bulk update completed.');
-
       return res.send({});
     } catch (error) {
       await session.abortTransaction();
       session.endSession();
-      
-      console.error('Error during bulk update:', error);
       
       return res.status(500).send('Internal Server Error: ' + error.message);
     }

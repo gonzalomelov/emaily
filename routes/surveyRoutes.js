@@ -19,12 +19,8 @@ function isEmail(inputString) {
 }
 
 module.exports = app => {
-  app.get('/api/surveys/thanks', (req, res) => {
-    res.send('Thanks!');
-  });
-
   app.get('/api/surveys/:_/:_(yes|no)', (req, res) => {
-    res.redirect('/api/surveys/thanks');
+    res.send('Thanks!');
   });
 
   app.post('/api/surveys', requireLogin, requireCredits, async (req, res) => {
