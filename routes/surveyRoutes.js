@@ -4,6 +4,7 @@ const keys = require('../config/keys');
 
 const requireLogin = require('../middlewares/requireLogin');
 const requireCredits = require('../middlewares/requireCredits');
+const clearCache = require('../middlewares/clearCache');
 
 const Mailer = require('../services/Mailer');
 const surveyTemplate = require('../services/emailTemplates/surveyTemplate');
@@ -31,7 +32,7 @@ module.exports = app => {
     res.send(surveys);
   });
 
-  app.post('/api/surveys', requireLogin, requireCredits, async (req, res) => {
+  app.post('/api/surveys', requireLogin, requireCredits, clearCache, async (req, res) => {
     const { title, recipients, from = keys.mailerFrom, subject, body } = req.body;
 
     if (!title) {
@@ -122,7 +123,7 @@ module.exports = app => {
       await survey.save();
       const user = await req.user.save();
 
-      return res.send(user);
+      res.send(user);
     } catch (error) {
       // // Rollback DB changes
       // await survey.deleteOne();

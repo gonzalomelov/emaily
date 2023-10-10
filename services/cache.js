@@ -18,7 +18,7 @@ mongoose.Query.prototype.cache = function(options = {}) {
   this.useCache = true;
   this.hashKey = JSON.stringify(options.key || '');
   return this;
-}
+};
 
 const exec = mongoose.Query.prototype.exec;
 
@@ -45,4 +45,10 @@ mongoose.Query.prototype.exec = async function() {
   await client.hSet(this.hashKey, key, JSON.stringify(result));
 
   return result;
-}
+};
+
+module.exports = {
+  clearHash(hashKey) {
+    client.del(JSON.stringify(hashKey));
+  }
+};
