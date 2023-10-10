@@ -26,7 +26,7 @@ module.exports = app => {
   app.get('/api/surveys', requireLogin, async (req, res) => {
     const surveys = await Survey.find({ _user: req.user.id }).select({
       recipients: false,
-    }).cache();
+    }).cache({ key: req.user.id });
 
     res.send(surveys);
   });
