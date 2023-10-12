@@ -1,11 +1,20 @@
 const puppeteer = require('puppeteer');
-const Keygrip = require('keygrip');
-const keys = require('../config/keys');
+const sessionFactory = require('./factories/sessionFactory');
+const userFactory = require('./factories/userFactory');
 
 const DOMAIN = 'http://localhost:3001';
-const USER_ID = '64fb617d8e946d05f1ef0275';
 
 let browser, page;
+
+async function authenticate() {
+  const user = await userFactory();
+  const session = sessionFactory(user._id);
+  
+  await page.setCookie({ name: 'session', value: session.session });
+  await page.setCookie({ name: 'session.sig', value: session.sig });
+  await page.goto(DOMAIN);
+  await page.waitForSelector('a[href="/api/logout"]');
+}
 
 beforeEach(async () => {
   browser = await puppeteer.launch({
@@ -33,16 +42,8 @@ test('clicking login starts OAuth flow', async () => {
   expect(url).toMatch(/accounts\.google\.com/);
 })
 
-test.only('when signed in, shows logout button', async () => {
-  const passportObject = { passport: { user: USER_ID } };
-  const session = require('safe-buffer').Buffer.from(JSON.stringify(passportObject)).toString('base64');
-  const keygrip = new Keygrip([keys.cookieKey]);
-  const signature = keygrip.sign('session=' + session);
-  
-  await page.setCookie({ name: 'session', value: session });
-  await page.setCookie({ name: 'session.sig', value: signature });
-  await page.goto(DOMAIN);
-  await page.waitForSelector('a[href="/api/logout"]');
+test('when signed in, shows logout button', async () => {
+  await authenticate();
 
   const text = await page.$eval('a[href="/api/logout"]', el => el.innerHTML);
 
