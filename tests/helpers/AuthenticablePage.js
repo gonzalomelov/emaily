@@ -58,4 +58,8 @@ module.exports = class AuthenticablePage {
     await this.page.goto(DOMAIN);
     await this.page.waitForSelector('a[href="/api/logout"]');
   }
+
+  async getContentsOf(selector) {
+    return await this.page.$eval(selector, el => el.innerHTML);
+  }
 }
