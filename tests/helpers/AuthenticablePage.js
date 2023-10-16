@@ -50,7 +50,7 @@ module.exports = class AuthenticablePage {
   }
 
   async login() {
-    const user = await userFactory();
+    const user = await userFactory.createUserWithCredits();
     const session = sessionFactory(user._id);
     
     await this.page.setCookie({ name: 'session', value: session.session });
