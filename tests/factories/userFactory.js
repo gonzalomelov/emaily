@@ -2,6 +2,15 @@ const mongoose = require('mongoose');
 
 const User = mongoose.model('users');
 
-module.exports = () => {
+const createUserWithCredits = () => {
+  return new User({ credits: 10 }).save();
+}
+
+const createUserWithoutCredits = () => {
   return new User({}).save();
+}
+
+module.exports = {
+  createUserWithCredits,
+  createUserWithoutCredits
 }
