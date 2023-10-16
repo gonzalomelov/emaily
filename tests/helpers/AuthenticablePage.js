@@ -55,7 +55,7 @@ module.exports = class AuthenticablePage {
     
     await this.page.setCookie({ name: 'session', value: session.session });
     await this.page.setCookie({ name: 'session.sig', value: session.sig });
-    await this.page.goto(DOMAIN);
+    await this.page.goto(DOMAIN + '/surveys');
     await this.page.waitForSelector('a[href="/api/logout"]');
   }
 
