@@ -19,18 +19,44 @@ describe('When signed in', () => {
     await page.click('a[href="/surveys/new"]');
   });
 
-  test('can see the form', async () => {
+  test('Can see the form', async () => {
     const formLabelText = await page.getContentsOf('form label');
   
     expect(formLabelText).toEqual('Title');
   })
+
+  describe('And using valid form inputs', () => {
+    beforeEach(async () => {
+      await page.type('input[name="subject"]', 'subject');
+      await page.type('input[name="title"]', 'title');
+      await page.type('input[name="body"]', 'body');
+      await page.type('input[name="recipients"]', 'a@email.com');
+
+      await page.click('button[type="submit"]');
+    });
+
+    test('Submitting takes user to a review screen', async () => {
+      const formReviewTitle = await page.getContentsOf('h2');
+    
+      expect(formReviewTitle).toEqual('Please confirm your entries');
+    })
+
+    test('Submitting then saving adds survey to "Survey Index" page', async () => {
+      await page.click('button.teal.right');
+
+      await page.waitForSelector('div.card');
+      const cardTitle = await page.getContentsOf('span.card-title');
+
+      expect(cardTitle).toEqual('title');
+    })
+  });
 
   describe('And using invalid form inputs', () => {
     beforeEach(async () => {
       await page.click('button[type="submit"]');
     });
 
-    test('submitting shows error messages', async () => {
+    test('Submitting shows error messages', async () => {
       const subjectErrorText = await page.getContentsOf('.subject .red-text');
       const titleErrorText = await page.getContentsOf('.title .red-text');
       const bodyErrorText = await page.getContentsOf('.body .red-text');
