@@ -1,8 +1,7 @@
 const puppeteer = require('puppeteer');
 const sessionFactory = require('../factories/sessionFactory');
 const userFactory = require('../factories/userFactory');
-
-const DOMAIN = 'http://localhost:3001';
+const keys = require('../../config/keys');
 
 module.exports = class AuthenticablePage {
   static async build() {
@@ -55,7 +54,7 @@ module.exports = class AuthenticablePage {
     
     await this.page.setCookie({ name: 'session', value: session.session });
     await this.page.setCookie({ name: 'session.sig', value: session.sig });
-    await this.page.goto(DOMAIN + '/surveys');
+    await this.page.goto(keys.web + '/surveys');
     await this.page.waitForSelector('a[href="/api/logout"]');
   }
 

@@ -1,13 +1,12 @@
 const AuthenticablePage = require('./helpers/AuthenticablePage');
-
-const DOMAIN = 'http://localhost:3001';
+const keys = require('../config/keys');
 
 let page;
 
 beforeEach(async () => {
   page = await AuthenticablePage.build();
 
-  await page.goto(DOMAIN);
+  await page.goto(keys.web);
 })
 
 afterEach(async () => {
