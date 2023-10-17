@@ -76,39 +76,18 @@ describe('When not signed in', () => {
   });
 
   test.only('Cannot create survey', async () => {
-    const res = await page.evaluate(
-      () =>
-        fetch('/api/surveys', {
-          method: 'POST',
-          credentials: 'same-origin',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            subject: 'subject',
-            title: 'title',
-            body: 'body',
-            recipients: 'a@email.com'
-          })
-        })
-        .then(res => res.json())
-    );
+    const res = await page.post('/api/surveys', {
+      subject: 'subject',
+      title: 'title',
+      body: 'body',
+      recipients: 'a@email.com'
+    });
 
     expect(res).toEqual({"error": "You must log in!"});  
   })
 
   test.only('Cannot fetch surveys', async () => {
-    const res = await page.evaluate(
-      () =>
-        fetch('/api/surveys', {
-          method: 'GET',
-          credentials: 'same-origin',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        .then(res => res.json())
-    );
+    const res = await page.get('/api/surveys');
 
     expect(res).toEqual({"error": "You must log in!"});  
   })
