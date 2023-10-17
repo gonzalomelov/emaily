@@ -71,24 +71,25 @@ describe('When signed in', () => {
 });
 
 describe('When not signed in', () => {
-  beforeEach(async () => {
-    
-  });
+  const actions = [
+    {
+      method: 'post',
+      path: '/api/surveys',
+      data: {
+        subject: 'subject',
+        title: 'title',
+        body: 'body',
+        recipients: 'a@email.com'
+      }
+    },
+    {
+      method: 'get',
+      path: '/api/surveys'
+    },
+  ];
 
-  test.only('Cannot create survey', async () => {
-    const res = await page.post('/api/surveys', {
-      subject: 'subject',
-      title: 'title',
-      body: 'body',
-      recipients: 'a@email.com'
-    });
-
-    expect(res).toEqual({"error": "You must log in!"});  
-  })
-
-  test.only('Cannot fetch surveys', async () => {
-    const res = await page.get('/api/surveys');
-
-    expect(res).toEqual({"error": "You must log in!"});  
+  test.only('Cannot access private routes', async () => {
+    const results = await page.execRequests(actions);
+    expect(results).toEqual(Array(actions.length).fill({"error": "You must log in!"}));
   })
 })
