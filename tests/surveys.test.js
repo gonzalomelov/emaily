@@ -88,7 +88,7 @@ describe('When not signed in', () => {
     },
   ];
 
-  test.only('Cannot access private routes', async () => {
+  test('Cannot access private routes', async () => {
     const results = await page.execRequests(actions);
     expect(results).toEqual(Array(actions.length).fill({"error": "You must log in!"}));
   })
