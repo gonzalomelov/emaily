@@ -94,4 +94,8 @@ module.exports = class AuthenticablePage {
       , data
     );
   }
+
+  execRequests(actions) {
+    return Promise.all(actions.map(({ method, path, data }) => this[method](path, data)));
+  }
 }
