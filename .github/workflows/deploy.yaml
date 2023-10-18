@@ -37,7 +37,6 @@ jobs:
       - name: Install Dependencies
         run: |
           npm install
-          npm run build
           npm install --prefix client
           npm run build --prefix client
       - name: Start server
