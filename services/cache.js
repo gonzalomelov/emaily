@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 const redis = require('redis');
 const keys = require('../config/keys');
 
-const client = redis.createClient(keys.redis);
+const client = redis.createClient({
+  legacyMode: true,
+  url: keys.redis
+});
 async function connectRedis() {
   try {
     await client.connect();
