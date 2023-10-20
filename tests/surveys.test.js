@@ -5,6 +5,7 @@ let page;
 
 beforeEach(async () => {
   page = await AutheticablePage.build();
+  
   await page.goto(keys.web);
 })
 
