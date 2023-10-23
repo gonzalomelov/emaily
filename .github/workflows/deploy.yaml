@@ -33,12 +33,12 @@ jobs:
       MONGO_URI: ${{ secrets.MONGO_URI }}
       REDIS: ${{ secrets.REDIS }}
       COOKIE_KEY: ${{ secrets.COOKIE_KEY }}
-      STRIPE_PUBLISHABLE_KEY: $STRIPE_PUBLISHABLE_KEY
+      STRIPE_PUBLISHABLE_KEY: ${{ env.STRIPE_PUBLISHABLE_KEY }}
       STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
       SEND_GRID_API_KEY: ${{ secrets.SEND_GRID_API_KEY }}
-      API: $API
-      WEB: $WEB
-      MAILER_FROM: $MAILER_FROM
+      API: ${{ env.API }}
+      WEB: ${{ env.WEB }}
+      MAILER_FROM: ${{ env.MAILER_FROM }}
     
     steps:
       - uses: actions/checkout@v2
