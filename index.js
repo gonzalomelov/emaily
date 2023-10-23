@@ -9,17 +9,9 @@ require('./models/Survey');
 require('./services/passport');
 require('./services/cache');
 
-mongoose.connect(keys.mongoURI).catch(err => console.log(err.reason));;
-
-const db = mongoose.connection;
-
-db.on('connected', () => {
-  console.log('Connected to MongoDB');
-});
-
-db.on('error', (err) => {
-  console.error(`MongoDB connection error: ${err}`);
-});
+mongoose.connect(keys.mongoURI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.log(err.reason));
 
 const app = express();
 
