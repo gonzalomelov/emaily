@@ -3,8 +3,6 @@ const sessionFactory = require('../factories/sessionFactory');
 const userFactory = require('../factories/userFactory');
 const keys = require('../../config/keys');
 
-console.log(keys);
-
 module.exports = class AuthenticablePage {
   static async build() {
     const browser = await puppeteer.launch({
@@ -38,12 +36,6 @@ module.exports = class AuthenticablePage {
 
         if (value instanceof Function) {
           return function (...args) {
-            console.log(value);
-            console.log(page);
-            console.log(property);
-            console.log(this);
-            console.log(receiver);
-            console.log(args);
             return value.apply(this === receiver ? page : this, args);
           };
         }
