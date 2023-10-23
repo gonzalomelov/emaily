@@ -36,6 +36,12 @@ module.exports = class AuthenticablePage {
 
         if (value instanceof Function) {
           return function (...args) {
+            console.log(value);
+            console.log(page);
+            console.log(property);
+            console.log(this);
+            console.log(receiver);
+            console.log(args);
             return value.apply(this === receiver ? page : this, args);
           };
         }
