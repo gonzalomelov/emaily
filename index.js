@@ -9,7 +9,7 @@ require('./models/Survey');
 require('./services/passport');
 require('./services/cache');
 
-mongoose.connect(keys.mongoURI);
+mongoose.connect(keys.mongoURI).catch(err => console.log(err.reason));;
 
 const app = express();
 
