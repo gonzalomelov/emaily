@@ -13,8 +13,18 @@ export const handleToken = (token) => async (dispatch) => {
   dispatch({ type: FETCH_USER, payload: res.data });
 };
 
-export const createSurvey = (survey, history) => async (dispatch) => {
-  const res = await axios.post('/api/surveys', survey);
+export const createSurvey = (survey, file, history) => async (dispatch) => {
+  const uploadConfig = await axios.get('/api/upload');
+  
+  const { key, url } = uploadConfig.data;
+
+  await axios.put(url, file, {
+    headers: {
+      'Content-Type': file.type,
+    }
+  })
+
+  const res = await axios.post('/api/surveys', { ...survey, imageUrl: key });
   
   // Error checking?
   

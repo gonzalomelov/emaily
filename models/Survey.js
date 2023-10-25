@@ -21,6 +21,7 @@ const surveySchema = new Schema({
     type: Number,
     default: 0
   },
+  imageUrl: String,
 });
 
 mongoose.model('surveys', surveySchema);

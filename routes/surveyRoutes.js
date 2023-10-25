@@ -33,7 +33,7 @@ module.exports = app => {
   });
 
   app.post('/api/surveys', requireLogin, requireCredits, clearCache, async (req, res) => {
-    const { title, recipients, from = keys.mailerFrom, subject, body } = req.body;
+    const { title, recipients, from = keys.mailerFrom, subject, body, imageUrl } = req.body;
 
     if (!title) {
       return res.status(400).send({
@@ -79,6 +79,7 @@ module.exports = app => {
       from,
       subject,
       body,
+      imageUrl,
       _user: req.user.id
     });
 

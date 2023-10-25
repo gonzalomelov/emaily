@@ -7,6 +7,12 @@ class SurveyList extends Component {
     this.props.fetchSurveys();
   }
   
+  renderImage(survey) {
+    if (survey.imageUrl) {
+      return <img src={'https://gonzalomelov-emaily.s3.amazonaws.com/' + survey.imageUrl} alt='survey' />;
+    }
+  }
+
   renderSurveys() {
     return this.props.surveys.map(survey => (
       <div class="card blue-grey darken-1">
@@ -14,6 +20,7 @@ class SurveyList extends Component {
           <span class="card-title">{survey.title}</span>
           <p>Yes: {survey.yes}</p>
           <p>No: {survey.no}</p>
+          {this.renderImage(survey)}
         </div>
       </div>
     ));
